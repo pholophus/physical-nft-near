@@ -15,6 +15,19 @@ const NO_DEPOSIT = '0';
 function onScanSuccess(decodedText, decodedResult) {
   // handle the scanned code as you like, for example:
   console.log(`Code matched = ${decodedText}`, decodedResult);
+
+  const result = document.createElement("h1");
+  const resultText = document.createTextNode("QR detail:");
+  result.appendChild(resultText);
+  document.getElementById("output").appendChild(result);
+
+  const qrResult = document.createElement("h2");
+  qrResult.id = 'qr-result'
+  const textQrResult = document.createTextNode(decodedText);
+  qrResult.appendChild(textQrResult);
+  document.getElementById("output").appendChild(qrResult);
+  
+
 }
 
 function onScanFailure(error) {
