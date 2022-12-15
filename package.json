@@ -1,0 +1,40 @@
+{
+  "name": "seed-metabuild",
+  "version": "1.0.0",
+  "license": "(MIT AND Apache-2.0)",
+  "scripts": {
+    "start": "cd frontend && parcel index.html --open",
+    "build": "cd frontend && parcel build index.html --public-url ./"
+  },
+  "devDependencies": {
+    "buffer": "^5.7.1",
+    "env-cmd": "^10.1.0",
+    "events": "^3.3.0",
+    "near-cli": "^3.3.0",
+    "nodemon": "^2.0.16",
+    "parcel": "^2.7.0",
+    "process": "^0.11.10"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.7.4",
+    "@icon-park/react": "^1.4.2",
+    "@near-wallet-selector/core": "^7.0.0",
+    "@near-wallet-selector/ledger": "^7.0.0",
+    "@near-wallet-selector/math-wallet": "^7.0.0",
+    "@near-wallet-selector/meteor-wallet": "^7.0.0",
+    "@near-wallet-selector/modal-ui": "^7.0.0",
+    "@near-wallet-selector/my-near-wallet": "^7.0.0",
+    "@near-wallet-selector/near-wallet": "^7.0.0",
+    "@near-wallet-selector/nightly": "^7.0.0",
+    "@near-wallet-selector/nightly-connect": "^7.0.0",
+    "@near-wallet-selector/sender": "^7.0.0",
+    "@near-wallet-selector/wallet-connect": "^7.0.0",
+    "@parcel/transformer-css": "^2.7.0",
+    "html5-qrcode": "^2.3.4",
+    "ipfs-core": "^0.17.0",
+    "ipfs-http-client": "^33.0.1",
+    "near-api-js": "^0.44.2",
+    "react-icons": "^4.6.0",
+    "regenerator-runtime": "^0.13.11"
+  }
+}
