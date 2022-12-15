@@ -2,6 +2,7 @@ import 'regenerator-runtime/runtime';
 import { utils } from 'near-api-js'
 import { Wallet } from './near-wallet';
 import {Html5QrcodeScanner} from "html5-qrcode"
+import JSON from './test.json'
 
 const HELLO_ADDRESS = "hello.near-examples.testnet";
 const GUEST_ADDRESS = "guestbook.near-examples.testnet";
@@ -11,6 +12,7 @@ const wallet = new Wallet({})
 const THIRTY_TGAS = '30000000000000';
 const NO_DEPOSIT = '0';
 
+//#region 
 //qrcode scanner
 function onScanSuccess(decodedText, decodedResult) {
   // handle the scanned code as you like, for example:
@@ -26,7 +28,41 @@ function onScanSuccess(decodedText, decodedResult) {
   const textQrResult = document.createTextNode(decodedText);
   qrResult.appendChild(textQrResult);
   document.getElementById("output").appendChild(qrResult);
-  
+
+  let NFTTitle = JSON[0].metadata.title
+  let NFTDescription = JSON[0].metadata.description 
+  let NFTMedia = JSON[0].metadata.media
+  let NFTPrice = JSON[0].metadata.price
+
+  //NFT title
+  const title = document.createElement("h4");
+  const titleText = document.createTextNode(NFTTitle);
+  title.appendChild(titleText);
+  document.getElementById("title").appendChild(title);
+
+  //NFT desc
+  const desc = document.createElement("h4");
+  const descText = document.createTextNode(NFTDescription);
+  desc.appendChild(descText);
+  document.getElementById("description").appendChild(desc);
+
+  //NFT media
+  var x = document.createElement("IMG");
+  x.setAttribute("src", NFTMedia);
+  x.setAttribute("width", "304");
+  x.setAttribute("height", "228");
+  x.setAttribute("alt", "The Pulpit Rock");
+  document.getElementById("media").appendChild(x);
+  // const media = document.createElement("a");
+  // const mediaText = document.createTextNode(NFTMedia);
+  // media.appendChild(mediaText);
+  // document.getElementById("media").appendChild(media);
+
+  //NFT price
+  const price = document.createElement("h4");
+  const priceText = document.createTextNode(NFTPrice);
+  price.appendChild(priceText);
+  document.getElementById("price").appendChild(price);
 
 }
 
@@ -35,7 +71,9 @@ function onScanFailure(error) {
   // for example:
   console.warn(`Code scan error = ${error}`);
 }
+//#endregion
 
+//#region 
 let html5QrcodeScanner = new Html5QrcodeScanner(
   "reader",
   { fps: 10, qrbox: {width: 250, height: 250} },
@@ -164,3 +202,4 @@ function update_UI(greeting, from, messages) {
     list.appendChild(item)
   })
 }
+//#endregion

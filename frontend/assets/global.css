@@ -36,7 +36,7 @@ h1 {
   color: var(--secondary);
   text-decoration: underline;
 }
-h2, p {
+h2, p, h3, h4, a {
   text-align: center;
 }
 
@@ -216,4 +216,19 @@ color: yellow;
 
 .first{
   margin: 3rem
+}
+
+#detail {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+#detail h4 {
+  color: greenyellow;
+}
+
+#detail, #title, #media, #price, #owner, #FORSALE {
+  margin: 2rem;
+  /* display: flex; */
+  /* flex-direction: row; */
 }
