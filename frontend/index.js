@@ -103,8 +103,7 @@ async function getGreetingAndMessages() {
   // query the greeting in Hello NEAR
   // const currentGreeting = await wallet.viewMethod({ method: 'get_greeting', contractId: HELLO_ADDRESS });
   const currentGreeting = await wallet.viewMethod({ method: 'nft_tokens_for_owner', contractId: NFT_ADDRESS, args: {account_id: "pholophus.testnet"} });
-
-  console.log("currentGreeting",currentGreeting)
+  
   // query the last 4 messages in the Guest Book
   const totalMessages = await wallet.viewMethod({method: 'total_messages', contractId: GUEST_ADDRESS })
   const from_index = (totalMessages > 4? totalMessages - 4: 0).toString();
