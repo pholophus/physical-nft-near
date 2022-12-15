@@ -12,9 +12,76 @@ const THIRTY_TGAS = '30000000000000';
 const NO_DEPOSIT = '0';
 
 //qrcode scanner
-function onScanSuccess(decodedText, decodedResult) {
+async function onScanSuccess(decodedText, decodedResult) {
   // handle the scanned code as you like, for example:
   console.log(`Code matched = ${decodedText}`, decodedResult);
+
+  //dpaat list nft owner original
+  const metadatas = await wallet.viewMethod({ method: 'nft_tokens_for_owner', contractId: NFT_ADDRESS, args: {account_id: "pholophus.testnet"} });
+
+  let resultSign
+  let owned = true
+  let unownedMetadata
+
+  //check if owner original still pegang atau tak
+  for(const metadata of metadatas ){
+    if(metadata.token_id == decodedText){
+      owned = false;
+      unownedMetadata = metadata
+    }
+  }
+
+  //kalau owner lain pegang, return owner yang beli
+  if(owned == true){
+    const metadatas = await wallet.viewMethod({ method: 'nft_tokens_for_owner', contractId: NFT_ADDRESS, args: {account_id: "alice.pholophus.testnet"} });
+
+    for(const metadata of metadatas ){
+      if(metadata.token_id == decodedText){
+        resultSign = {
+          "own": true,
+          "metadata": metadata
+        }
+      }
+    }
+    
+  //kalau owner original masih oegang, jual ni
+  }else{
+    resultSign = {
+      "own": false,
+      "metadata": unownedMetadata
+    }
+  }
+
+  const ownerDetail = {
+    receiverId: NFT_ADDRESS,
+    actions: [ // if any action fails, they all rollback together
+      {
+        type: 'FunctionCall',
+        params: {
+          methodName: ' nft_tokens_for_owner', args: { account_id: pholophus.testnet },
+          gas: THIRTY_TGAS, deposit: NO_DEPOSIT
+        }
+      }
+    ]
+  }
+
+  const buyNFT = {
+    receiverId: NFT_ADDRESS,
+    actions: [ // if any action fails, they all rollback together
+      {
+        type: 'FunctionCall',
+        params: {
+          methodName: ' nft_transfer', args: { token_id: decodedText,  "receiver_id": "alice.'$ID'", "memo": "transfer ownership"},
+          gas: THIRTY_TGAS, deposit: NO_DEPOSIT
+        }
+      }
+    ]
+  }
+
+  // Sign **independent** transactions: If one fails, the rest **DO NOT** reverted
+  await wallet.signAndSendTransactions({ transactions: [ buyNFT ] })
+
+  console.log(resultSign)
 
   const result = document.createElement("h1");
   const resultText = document.createTextNode("QR detail:");
@@ -95,7 +162,7 @@ async function sendGreeting(event) {
     ]
   }
 
-  const ownerDetail = {
+  const buyNFT = {
     receiverId: NFT_ADDRESS,
     actions: [ // if any action fails, they all rollback together
       {
@@ -116,7 +183,7 @@ async function getGreetingAndMessages() {
   // query the greeting in Hello NEAR
   // const currentGreeting = await wallet.viewMethod({ method: 'get_greeting', contractId: HELLO_ADDRESS });
   const currentGreeting = await wallet.viewMethod({ method: 'nft_tokens_for_owner', contractId: NFT_ADDRESS, args: {account_id: "pholophus.testnet"} });
-  
+
   // query the last 4 messages in the Guest Book
   const totalMessages = await wallet.viewMethod({method: 'total_messages', contractId: GUEST_ADDRESS })
   const from_index = (totalMessages > 4? totalMessages - 4: 0).toString();
