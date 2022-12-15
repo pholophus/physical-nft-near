@@ -139,7 +139,7 @@ table {
 }
 
 #qr-result {
-  color: greenyellow;
+  color: grey;
 }
 
 #output {
@@ -147,7 +147,7 @@ table {
 }
 
 #output, h1 {
-color: yellow;
+color: brown;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -225,7 +225,7 @@ color: yellow;
 }
 
 #detail h4 {
-  color: greenyellow;
+  color: green;
 }
 
 #detail, #title, #media, #price, #owner, #FORSALE {

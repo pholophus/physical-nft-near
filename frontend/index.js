@@ -54,34 +54,34 @@ async function onScanSuccess(decodedText, decodedResult) {
     }
   }
 
-  const ownerDetail = {
-    receiverId: NFT_ADDRESS,
-    actions: [ // if any action fails, they all rollback together
-      {
-        type: 'FunctionCall',
-        params: {
-          methodName: ' nft_tokens_for_owner', args: { account_id: pholophus.testnet },
-          gas: THIRTY_TGAS, deposit: NO_DEPOSIT
-        }
-      }
-    ]
-  }
+  // const ownerDetail = {
+  //   receiverId: NFT_ADDRESS,
+  //   actions: [ // if any action fails, they all rollback together
+  //     {
+  //       type: 'FunctionCall',
+  //       params: {
+  //         methodName: ' nft_tokens_for_owner', args: { account_id: pholophus.testnet },
+  //         gas: THIRTY_TGAS, deposit: NO_DEPOSIT
+  //       }
+  //     }
+  //   ]
+  // }
 
-  const buyNFT = {
-    receiverId: NFT_ADDRESS,
-    actions: [ // if any action fails, they all rollback together
-      {
-        type: 'FunctionCall',
-        params: {
-          methodName: ' nft_transfer', args: { token_id: decodedText,  "receiver_id": "alice.'$ID'", "memo": "transfer ownership"},
-          gas: THIRTY_TGAS, deposit: NO_DEPOSIT
-        }
-      }
-    ]
-  }
+  // const buyNFT = {
+  //   receiverId: NFT_ADDRESS,
+  //   actions: [ // if any action fails, they all rollback together
+  //     {
+  //       type: 'FunctionCall',
+  //       params: {
+  //         methodName: ' nft_transfer', args: { token_id: decodedText,  "receiver_id": "alice.'$ID'", "memo": "transfer ownership"},
+  //         gas: THIRTY_TGAS, deposit: NO_DEPOSIT
+  //       }
+  //     }
+  //   ]
+  // }
 
   // Sign **independent** transactions: If one fails, the rest **DO NOT** reverted
-  await wallet.signAndSendTransactions({ transactions: [ buyNFT ] })
+  // await wallet.signAndSendTransactions({ transactions: [ buyNFT ] })
 
   console.log(resultSign)
 
@@ -92,14 +92,33 @@ async function onScanSuccess(decodedText, decodedResult) {
 
   const qrResult = document.createElement("h2");
   qrResult.id = 'qr-result'
-  const textQrResult = document.createTextNode(decodedText);
+  const textQrResult = document.createTextNode("ID is "+ decodedText);
   qrResult.appendChild(textQrResult);
   document.getElementById("output").appendChild(qrResult);
 
-  let NFTTitle = JSON[0].metadata.title
-  let NFTDescription = JSON[0].metadata.description 
-  let NFTMedia = JSON[0].metadata.media
-  let NFTPrice = JSON[0].metadata.price
+  // let NFTTitle = JSON[0].metadata.title
+  // let NFTDescription = JSON[0].metadata.description 
+  // let NFTMedia = JSON[0].metadata.media
+  // let NFTPrice = JSON[0].metadata.price
+
+  let NFTOwner = resultSign.metadata.owner_id
+  let NFTOwned = resultSign.own == true ? "Not for sale" : "For sale"
+  let NFTTitle = resultSign.metadata.metadata.title
+  let NFTDescription = resultSign.metadata.metadata.description 
+  let NFTMedia = resultSign.metadata.metadata.media
+  let NFTPrice = 30
+
+  //NFT owner
+  const owner = document.createElement("h4");
+  const ownerText = document.createTextNode(NFTOwner);
+  owner.appendChild(ownerText);
+  document.getElementById("owner").appendChild(owner);
+
+  //NFT title
+  const forsale = document.createElement("h4");
+  const forsaleText = document.createTextNode(NFTOwned);
+  forsale.appendChild(forsaleText);
+  document.getElementById("forsale").appendChild(forsale);
 
   //NFT title
   const title = document.createElement("h4");
@@ -120,10 +139,6 @@ async function onScanSuccess(decodedText, decodedResult) {
   x.setAttribute("height", "228");
   x.setAttribute("alt", "The Pulpit Rock");
   document.getElementById("media").appendChild(x);
-  // const media = document.createElement("a");
-  // const mediaText = document.createTextNode(NFTMedia);
-  // media.appendChild(mediaText);
-  // document.getElementById("media").appendChild(media);
 
   //NFT price
   const price = document.createElement("h4");
@@ -174,32 +189,6 @@ async function sendGreeting(event) {
   document.querySelector('#signed-in-flow').classList.add('please-wait');
 
   const GUEST_DEPOSIT = premium_check.checked ? utils.format.parseNearAmount('0.1') : '0';
-
-  const guestTx = {
-    receiverId: GUEST_ADDRESS,
-    actions: [ // actions execute sequentially
-      {
-        type: 'FunctionCall',
-        params: {
-          methodName: 'add_message', args: { text: greeting.value },
-          gas: THIRTY_TGAS, deposit: GUEST_DEPOSIT
-        }
-      },
-    ]
-  }
-
-  const helloTx = {
-    receiverId: HELLO_ADDRESS,
-    actions: [ // if any action fails, they all rollback together
-      {
-        type: 'FunctionCall',
-        params: {
-          methodName: 'set_greeting', args: { greeting: greeting.value },
-          gas: THIRTY_TGAS, deposit: NO_DEPOSIT
-        }
-      }
-    ]
-  }
 
   const buyNFT = {
     receiverId: NFT_ADDRESS,
