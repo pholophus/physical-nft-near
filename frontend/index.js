@@ -64,6 +64,7 @@ function onScanSuccess(decodedText, decodedResult) {
   price.appendChild(priceText);
   document.getElementById("price").appendChild(price);
 
+  document.getElementById("detail").style.display = "block"
 }
 
 function onScanFailure(error) {
