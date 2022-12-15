@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "(MIT AND Apache-2.0)",
   "scripts": {
-    "start": "cd frontend && parcel index.html --open",
+    "start": "cd frontend && parcel --no-cache index.html --open",
     "build": "cd frontend && parcel build index.html --public-url ./"
   },
   "devDependencies": {

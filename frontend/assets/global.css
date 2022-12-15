@@ -221,6 +221,7 @@ color: yellow;
 #detail {
   text-align: center;
   margin-top: 1rem;
+  display: none;
 }
 
 #detail h4 {
