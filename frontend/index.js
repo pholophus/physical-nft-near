@@ -54,97 +54,39 @@ async function onScanSuccess(decodedText, decodedResult) {
     }
   }
 
-  // const ownerDetail = {
-  //   receiverId: NFT_ADDRESS,
-  //   actions: [ // if any action fails, they all rollback together
-  //     {
-  //       type: 'FunctionCall',
-  //       params: {
-  //         methodName: ' nft_tokens_for_owner', args: { account_id: pholophus.testnet },
-  //         gas: THIRTY_TGAS, deposit: NO_DEPOSIT
-  //       }
-  //     }
-  //   ]
-  // }
+  document.getElementById("nft-card").style.visibility = "visible";
 
-  // const buyNFT = {
-  //   receiverId: NFT_ADDRESS,
-  //   actions: [ // if any action fails, they all rollback together
-  //     {
-  //       type: 'FunctionCall',
-  //       params: {
-  //         methodName: ' nft_transfer', args: { token_id: decodedText,  "receiver_id": "alice.'$ID'", "memo": "transfer ownership"},
-  //         gas: THIRTY_TGAS, deposit: NO_DEPOSIT
-  //       }
-  //     }
-  //   ]
-  // }
+  document.getElementById("output").innerHTML = "ID is "+ decodedText;
 
-  // Sign **independent** transactions: If one fails, the rest **DO NOT** reverted
-  // await wallet.signAndSendTransactions({ transactions: [ buyNFT ] })
-
-  console.log(resultSign)
-
-  const result = document.createElement("h1");
-  const resultText = document.createTextNode("QR detail:");
-  result.appendChild(resultText);
-  document.getElementById("output").appendChild(result);
-
-  const qrResult = document.createElement("h2");
-  qrResult.id = 'qr-result'
-  const textQrResult = document.createTextNode("ID is "+ decodedText);
-  qrResult.appendChild(textQrResult);
-  document.getElementById("output").appendChild(qrResult);
-
-  // let NFTTitle = JSON[0].metadata.title
-  // let NFTDescription = JSON[0].metadata.description 
-  // let NFTMedia = JSON[0].metadata.media
-  // let NFTPrice = JSON[0].metadata.price
-
-  let NFTOwner = resultSign.metadata.owner_id
+  let NFTOwner = resultSign.metadata.owner_id == "pholophus.testnet" ? "Minter " + resultSign.metadata.owner_id : resultSign.metadata.owner_id
   let NFTOwned = resultSign.own == true ? "Not for sale" : "For sale"
   let NFTTitle = resultSign.metadata.metadata.title
   let NFTDescription = resultSign.metadata.metadata.description 
   let NFTMedia = resultSign.metadata.metadata.media
   let NFTPrice = 30
 
-  //NFT owner
-  const owner = document.createElement("h4");
-  const ownerText = document.createTextNode(NFTOwner);
-  owner.appendChild(ownerText);
-  document.getElementById("owner").appendChild(owner);
+  document.getElementById("owner").innerHTML = `Owner(${NFTOwner})`;
+
+  //NFT sale
+  document.getElementById("forsale").innerHTML = NFTOwned;
 
   //NFT title
-  const forsale = document.createElement("h4");
-  const forsaleText = document.createTextNode(NFTOwned);
-  forsale.appendChild(forsaleText);
-  document.getElementById("forsale").appendChild(forsale);
-
-  //NFT title
-  const title = document.createElement("h4");
-  const titleText = document.createTextNode(NFTTitle);
-  title.appendChild(titleText);
-  document.getElementById("title").appendChild(title);
+  document.getElementById("title").innerHTML = NFTTitle;
 
   //NFT desc
-  const desc = document.createElement("h4");
-  const descText = document.createTextNode(NFTDescription);
-  desc.appendChild(descText);
-  document.getElementById("description").appendChild(desc);
+  document.getElementById("description").innerHTML = NFTDescription;
 
   //NFT media
-  var x = document.createElement("IMG");
-  x.setAttribute("src", NFTMedia);
-  x.setAttribute("width", "304");
-  x.setAttribute("height", "228");
-  x.setAttribute("alt", "The Pulpit Rock");
-  document.getElementById("media").appendChild(x);
+  document.getElementById("media").src = NFTMedia;
 
   //NFT price
-  const price = document.createElement("h4");
-  const priceText = document.createTextNode(NFTPrice);
-  price.appendChild(priceText);
-  document.getElementById("price").appendChild(price);
+  document.getElementById("price").innerHTML = `Price: ${NFTPrice}`;
+
+  document.getElementById("buy-action").classList = resultSign.own == true ? "btn btn-danger" : "btn btn-success"
+
+  document.getElementById("buy-action").innerHTML = resultSign.own == true ? "Not Available" : "Buy"
+
+  document.getElementById("buy-action").disabled = resultSign.own == true ? true : false
 
   document.getElementById("detail").style.display = "block"
 }
@@ -172,90 +114,7 @@ window.onload = async () => {
   } else {
     signedOutFlow();
   }
-
-  getGreetingAndMessages();
 };
 
-// Button clicks
-document.querySelector('form').onsubmit = sendGreeting;
-document.querySelector('#sign-in-button').onclick = () => { wallet.signIn(); };
-document.querySelector('#sign-out-button').onclick = () => { wallet.signOut(); };
 
-async function sendGreeting(event) {
-  // handle UI
-  event.preventDefault();
-  const { greeting, premium_check } = event.target.elements;
-
-  document.querySelector('#signed-in-flow').classList.add('please-wait');
-
-  const GUEST_DEPOSIT = premium_check.checked ? utils.format.parseNearAmount('0.1') : '0';
-
-  const buyNFT = {
-    receiverId: NFT_ADDRESS,
-    actions: [ // if any action fails, they all rollback together
-      {
-        type: 'FunctionCall',
-        params: {
-          methodName: ' nft_tokens_for_owner', args: { account_id: pholophus.testnet },
-          gas: THIRTY_TGAS, deposit: NO_DEPOSIT
-        }
-      }
-    ]
-  }
-
-  // Sign **independent** transactions: If one fails, the rest **DO NOT** reverted
-  await wallet.signAndSendTransactions({ transactions: [ helloTx, guestTx ] })
-}
-
-async function getGreetingAndMessages() {
-  // query the greeting in Hello NEAR
-  // const currentGreeting = await wallet.viewMethod({ method: 'get_greeting', contractId: HELLO_ADDRESS });
-  const currentGreeting = await wallet.viewMethod({ method: 'nft_tokens_for_owner', contractId: NFT_ADDRESS, args: {account_id: "pholophus.testnet"} });
-
-  // query the last 4 messages in the Guest Book
-  const totalMessages = await wallet.viewMethod({method: 'total_messages', contractId: GUEST_ADDRESS })
-  const from_index = (totalMessages > 4? totalMessages - 4: 0).toString();
-  const latestMessages = await wallet.viewMethod({ method: 'get_messages', contractId: GUEST_ADDRESS, args: {from_index, limit: 4} });
-
-  
-  // handle UI stuff
-  update_UI(currentGreeting, from_index, latestMessages);
-}
-
-// UI: Display the signed-out-flow container
-function signedOutFlow() {
-  document.querySelector('#signed-in-flow').style.display = 'none';
-  document.querySelector('#signed-out-flow').style.display = 'block';
-}
-
-// UI: Displaying the signed in flow container and fill in account-specific data
-function signedInFlow() {
-  document.querySelector('#signed-out-flow').style.display = 'none';
-  document.querySelector('#signed-in-flow').style.display = 'block';
-  document.querySelectorAll('[data-behavior=account-id]').forEach(el => {
-    el.innerText = wallet.accountId;
-  });
-}
-
-function update_UI(greeting, from, messages) {
-  document.querySelector('#greeting').innerHTML = greeting;
-
-  const list = document.querySelector('#message-list')
-  list.innerHTML = "";
-
-  let idx = from;
-  messages.forEach(msg => {
-    let item = document.createElement('tr')
-    const innerHTML = `
-      <tr>
-       <th scope="row">${idx++}</th>
-       <td> ${msg.sender} </td>
-       <td> ${msg.text} </td>
-       <td> ${msg.premium}</td>
-      </tr>
-    `
-    item.innerHTML = innerHTML
-    list.appendChild(item)
-  })
-}
 //#endregion

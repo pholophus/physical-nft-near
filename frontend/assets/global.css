@@ -224,12 +224,11 @@ color: brown;
   display: none;
 }
 
-#detail h4 {
-  color: green;
+#detail1 {
+  text-align: center;
+  margin-top: 1rem;
 }
 
-#detail, #title, #media, #price, #owner, #FORSALE {
-  margin: 2rem;
-  /* display: flex; */
-  /* flex-direction: row; */
+#detail h4 {
+  color: green;
 }
